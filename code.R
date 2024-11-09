@@ -62,6 +62,82 @@ calc_O2_cont <- function(pO2 = 100, Hb = 15) {
 calc_O2_cont()
 
 
+
+#             Severinghaus Implementation by Mairbäurl (unfinished)
+################################################################################
+# [1]
+# Severinghaus, J.W., 1979. Simple, accurate equations for human blood O2 
+# dissociation computations. J. Appl. Physiol. 46, 599–602.
+# https://doi.org/10.1152/jappl.1979.46.3.599
+
+# [2]
+# Ellis, R.K., 1989. Determination of PO2 from saturation. 
+# J. Appl. Physiol. 67, 902–902. https://doi.org/10.1152/jappl.1989.67.2.902
+
+# [3]
+# Okada, Y., Tyuma, I., Sugimoto, T., 1977. Evaluation of Severinghaus’ Equation 
+# and Its Modification for 2, 3-Dpg. Jpn. J. Physiol. 27, 135–144. 
+# https://doi.org/10.2170/jjphysiol.27.135
+
+# [4]
+# Mairbäurl, H., Weber, R.E., 2012. Oxygen transport by hemoglobin. 
+# Compr. Physiol. 2, 1463–1489. https://doi.org/10.1002/cphy.c080113
+
+# Required libraries to run the code 
+library(ggplot2)
+
+S <- seq(0, 1, 0.01)
+
+# Reference [1]
+Severinghaus_S <- function(x){ (((x^3 + 150*x)^-1 * 23400) + 1)^-1 }
+
+# Note that S must be calculated as fractional saturation not percentage.
+# Reference [2] used this modification as it avoids problems with log function in R 
+Severinghaus_PO2st <- function(S) {
+  A <- 11700 * (S^-1 - 1)^-1
+  B <- (50^3 + A^2)^0.5
+  PO2st <- (B + A)^(1/3) - (B - A)^(1/3)
+  return(PO2st)
+}
+
+PO2st <- Severinghaus_PO2st(S)
+
+# Conditions that can be changed
+P50  <- 27.1 # Okkada P50 of standard blood = 27.1 but Severingahus = 26.86
+pH   <- 7.4  # Standard 7.4
+Temp <- 37.0 # Standard 37
+BE   <- 0    # Standard 0 ?
+DPG  <- 1.02 # accoreding to table 1 Okada 1.02 is norm. human blood with P50=27.1
+
+# Reference [3]
+logP50 <- log(P50) + 0.48*(7.4-pH) + 0.024*(Temp-37) + 0.0013*BE + (0.135*DPG)-0.116
+
+# Reference [4] revert log with exp() and store observed P50 value as P50obs
+P50obs <- exp(logP50)
+PO2act <- PO2st * P50obs / 26.86
+
+curves <- data.frame(S, PO2act, PO2st)[complete.cases(S, PO2act, PO2st), ]
+
+# Plotting both PO2act and PO2st on the x-axis and S on the y-axis
+ggplot(curves, aes(x = PO2act, y = S)) +
+  geom_line(aes(color = "PO2act")) +
+  geom_line(aes(x = PO2st, color = "PO2st")) +
+  ylab("Fractional Saturation (S)") +
+  xlab("Partial Pressure of Oxygen (PO2)") +
+  labs(color = "PO2 Type") +
+  scale_x_continuous(
+    name = expression("PO"[2] * " (mmHg)"),
+    breaks = seq(0, 100, 10),
+    limits = c(0, 100),
+    expand = c(0, 0)
+  ) +
+  geom_vline(xintercept = 21, linetype = "dashed", color = "black") +
+  theme_bw() +
+  theme(text = element_text(size = 9))
+
+
+
+
 #                         Henderson Hasselblach Equation 
 ################################################################################
 # Function to calculate pH using the Henderson-Hasselbalch equation
