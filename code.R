@@ -1,4 +1,5 @@
-############################ FICK's PRINCIPLE ##################################
+#                               FICK's PRINCIPLE 
+################################################################################
 # References: 
 # [1]
 # Fick, Adolf. 1870. Ueber die Messung des Blutquantums in den Herzventrikeln. 
@@ -22,7 +23,8 @@ VO2 <- calculate_VO2(Q = 5000, CaO2 = 20, CvO2 = 10)
 cat("Oxygen consumption (VO2) is", VO2, "mL O2 per minute\n")
 
 
-############################## Severinghaus Equations ##########################
+                            # Severinghaus Equations 
+################################################################################
 # References:
 # [1]
 # Severinghaus JW. Simple, accurate equations for human blood O2 dissociation computations. 
@@ -60,7 +62,8 @@ calc_O2_cont <- function(pO2 = 100, Hb = 15) {
 calc_O2_cont()
 
 
-####################### Henderson Hasselblach Equation #########################
+#                         Henderson Hasselblach Equation 
+################################################################################
 # Function to calculate pH using the Henderson-Hasselbalch equation
 calculate_pH <- function(pKa, A_minus_conc, HA_conc) {
   # Check that concentrations are positive
