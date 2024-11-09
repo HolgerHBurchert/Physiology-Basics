@@ -59,3 +59,35 @@ calc_O2_cont <- function(pO2 = 100, Hb = 15) {
 
 calc_O2_cont()
 
+
+####################### Henderson Hasselblach Equation #########################
+# Function to calculate pH using the Henderson-Hasselbalch equation
+calculate_pH <- function(pKa, A_minus_conc, HA_conc) {
+  # Check that concentrations are positive
+  if (A_minus_conc <= 0 || HA_conc <= 0) {
+    stop("Concentrations must be positive values.")
+  }
+  
+  # Calculate the ratio [A-]/[HA]
+  ratio <- A_minus_conc / HA_conc
+  
+  # Calculate pH
+  pH <- pKa + log10(ratio)
+  
+  return(pH)
+}
+
+# Given values
+pKa <- 4.76
+A_minus_conc <- 0.1  # [CH3COOm]
+HA_conc <- 0.1       # [CH3COOH]
+
+# Calculate pH
+pH_value <- calculate_pH(pKa, A_minus_conc, HA_conc)
+
+# Display the result
+cat("The pH of the buffer solution is:", pH_value, "\n")
+
+
+
+
