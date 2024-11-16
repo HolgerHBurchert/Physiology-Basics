@@ -1,5 +1,20 @@
-#                               FICK's PRINCIPLE 
+#                        Mass Balance and FICK's PRINCIPLE 
 ################################################################################
+# Oxygen consumption (VO2) = volume of O2 inspired minus volume of O2 expired
+calculate_VO2 <- function(VI, VE, FIO2 = 0.2093, FEO2) {
+  # VI: Volume of air inhaled per minute (L/min)
+  # VE: Volume of air exhaled per minute (L/min)
+  # FIO2: Fraction of oxygen in inspired air (default = 0.2093 for room air)
+  # FEO2: Fraction of oxygen in expired air
+  VO2 <- (VI * FIO2) - (VE * FEO2)
+  return(VO2)
+}
+
+# Example usage:
+ calculate_VO2(VI = 50, VE = 45, FEO2 = 0.17)
+
+
+ 
 # References: 
 # [1]
 # Fick, Adolf. 1870. Ueber die Messung des Blutquantums in den Herzventrikeln. 
@@ -21,6 +36,8 @@ VO2 <- calculate_VO2(Q = 5000, CaO2 = 20, CvO2 = 10)
 
 # Display the result
 cat("Oxygen consumption (VO2) is", VO2, "mL O2 per minute\n")
+
+
 
 
                             # Severinghaus Equations 
