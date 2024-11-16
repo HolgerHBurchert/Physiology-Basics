@@ -154,7 +154,7 @@ ggplot(curves, aes(x = PO2act, y = S)) +
 
 
 
-# Function to calculate the default DPG value
+# Function to calculate the default DPG value for Severinghaus equations where P50st is 26.86
 calculate_default_dpg <- function() {
   # Standard P50 in Severinghaus' framework
   P50_standard <- 26.86
