@@ -80,7 +80,7 @@ calc_O2_cont()
 
 
 
-#             Severinghaus Implementation by Mairbäurl (unfinished)
+#                              Severinghaus Model 
 ################################################################################
 # [1]
 # Severinghaus, J.W., 1979. Simple, accurate equations for human blood O2 
@@ -120,11 +120,11 @@ Severinghaus_PO2st <- function(S) {
 PO2st <- Severinghaus_PO2st(S)
 
 # Conditions that can be changed
-P50  <- 27.1 # Okkada P50 of standard blood = 27.1 but Severingahus = 26.86
+P50  <- 26.86 # Okkada P50 of standard blood = 27.1 but Severingahus = 26.86
 pH   <- 7.4  # Standard 7.4
 Temp <- 37.0 # Standard 37
 BE   <- 0    # Standard 0 ?
-DPG  <- 1.02 # accoreding to table 1 Okada 1.02 is norm. human blood with P50=27.1
+DPG  <- 0.8592593 # accoreding to table 1 Okada 1.02 is norm. human blood with P50=27.1
 
 # Reference [3]
 logP50 <- log(P50) + 0.48*(7.4-pH) + 0.024*(Temp-37) + 0.0013*BE + (0.135*DPG)-0.116
@@ -151,6 +151,24 @@ ggplot(curves, aes(x = PO2act, y = S)) +
   geom_vline(xintercept = 21, linetype = "dashed", color = "black") +
   theme_bw() +
   theme(text = element_text(size = 9))
+
+
+
+# Function to calculate the default DPG value
+calculate_default_dpg <- function() {
+  # Standard P50 in Severinghaus' framework
+  P50_standard <- 26.86
+  
+  # Solve for DPG where logP50 matches log(26.86)
+  default_logP50 <- log(P50_standard)
+  DPG_default <- (default_logP50 - log(26.86) - 0.48 * (7.4 - 7.4) - 0.024 * (37 - 37) - 0.0013 * 0 + 0.116) / 0.135
+  return(DPG_default)
+}
+
+# Compute the default DPG
+default_DPG <- calculate_default_dpg()
+default_DPG # which is simply 0.116/0.135
+
 
 
 
@@ -183,7 +201,5 @@ pH_value <- calculate_pH(pKa, A_minus_conc, HA_conc)
 
 # Display the result
 cat("The pH of the buffer solution is:", pH_value, "\n")
-
-
 
 
